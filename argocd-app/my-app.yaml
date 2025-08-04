@@ -1,0 +1,24 @@
+# argocd-apps/my-app.yaml (ใน GitOps Repository ของคุณ)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-app-deployment
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/natayos-a/gitops.git
+    targetRevision: main
+    path: helm-charts/frontend-charts
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: my-app-namespace
+  syncPolicy:
+    automated: # ให้ Argo CD Sync อัตโนมัติ
+      prune: true # ลบ Kubernetes Resources ที่ไม่มีอยู่ใน Git
+      selfHeal: true # แก้ไข Kubernetes Resources ที่ถูกแก้ไขนอก Git ให้กลับมาตรงกับ Git
+    syncOptions:
+      - CreateNamespace=true # (Optional) ให้ Argo CD สร้าง Namespace ถ้ายังไม่มี
