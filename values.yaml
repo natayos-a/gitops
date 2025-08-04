@@ -1,0 +1,33 @@
+image:
+  repository: 172.24.112.1:8082/my-app 
+  tag: "latest" 
+  pullPolicy: IfNotPresent 
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+
+ingress:
+  enabled: true
+  className: nginx
+  host: myapp.local
+  path: /
+  pathType: Prefix
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+
+replicaCount: 1
+
+resources: {}
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+
+configMap:
+  enabled: false
+  data: {}
