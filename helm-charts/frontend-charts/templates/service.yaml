@@ -1,0 +1,16 @@
+# my-app-chart/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "my-app.fullname" . }}
+  labels:
+    {{- include "my-app.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }} # ดึง service type จาก values.yaml
+  ports:
+    - port: {{ .Values.service.port }} # ดึง service port จาก values.yaml
+      targetPort: {{ .Values.service.targetPort }} # ดึง targetPort จาก values.yaml
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "my-app.selectorLabels" . | nindent 4 }}

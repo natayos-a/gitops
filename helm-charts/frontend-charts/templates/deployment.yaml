@@ -1,0 +1,36 @@
+# my-app-chart/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "my-app.fullname" . }}
+  labels:
+    {{- include "my-app.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }} # ดึงค่า replicaCount จาก values.yaml
+  selector:
+    matchLabels:
+      {{- include "my-app.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "my-app.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}" # <--- ดึง image repository และ tag จาก values.yaml
+          imagePullPolicy: {{ .Values.image.pullPolicy }} # ดึง imagePullPolicy จาก values.yaml
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }} # ดึง targetPort จาก values.yaml
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }} # ดึง resources จาก values.yaml
+          env: # ดึง Environment variables จาก values.yaml (ถ้ามี)
+          {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+          {{- end }}
