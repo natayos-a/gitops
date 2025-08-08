@@ -27,15 +27,9 @@ spec:
             - name: http
               containerPort: {{ .Values.service.targetPort }} # ดึง targetPort จาก values.yaml
               protocol: TCP
-            - name: http-back
-              containerPort: 3001
-              protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }} # ดึง resources จาก values.yaml
           env: # ดึง Environment variables จาก values.yaml (ถ้ามี)
           {{- range $key, $value := .Values.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}
-          {{- end }}
-          - name: PORT
-            value: "3001"
