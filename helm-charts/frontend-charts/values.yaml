@@ -1,6 +1,6 @@
 image:
   repository: 172.24.112.1:8082/my-app-frontend
-  tag: "v1.0.0"
+  tag: "1.0.0"
   pullPolicy: Always
 service:
   type: ClusterIP
